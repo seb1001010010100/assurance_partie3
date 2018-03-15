@@ -1,4 +1,4 @@
-package assurance_partie3;
+package main;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -196,7 +196,7 @@ public class Facture {
 		
 		try {
 			
-			PrintWriter writer = new PrintWriter("src/assurance_partie3/fichierSortie.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("src/main/fichierSortie.txt", "UTF-8");
 			writer.println("Bienvenue chez Barette!");
 			writer.println("Factures:");
 			for(int i = 0; i < tableauClients.length; i++) {

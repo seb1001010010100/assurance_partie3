@@ -1,4 +1,4 @@
-package assurance_partie3;
+package main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -66,7 +66,7 @@ public class Extracteur {
 		
         try {
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/assurance_partie3/" + nomFichier)); 
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/" + nomFichier)); 
             String ligne;
             //String qui change celon le type de donnee lue (clients/plats/commande)
             String estUn = null;
