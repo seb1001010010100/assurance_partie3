@@ -3,6 +3,10 @@ package main;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Facture {
 	
@@ -10,10 +14,13 @@ public class Facture {
 	private static String[][] tableauClients;
 	private static String[][] tableauPlats;
 	private static String [][] tableauCommandes;
+	private static ArrayList<String> tableauErreur = new ArrayList<String>();
+	private static final int TPS = 5, TVQ = 10;
+	
 
 	public static void main(String[] args) {
 		
-		extracteur.extraireDonnees();
+		getExtracteur().extraireDonnees("fichierEntree.txt");
 		if(verifierDonnees()) {
 			
 			System.out.println("Le fichier ne respecte pas le format demandé !");
@@ -26,6 +33,7 @@ public class Facture {
 		
 	}
 	
+	
 	//retourne faux si il n'y a pas d'erreur
 	public static boolean verifierDonnees() {
 		
@@ -33,9 +41,9 @@ public class Facture {
 		String[] splitString;
 		
 		//verifier les clients
-		for(int i = 0; i < extracteur.getListeClients().size(); i++) {
+		for(int i = 0; i < getExtracteur().getListeClients().size(); i++) {
 			
-			if(extracteur.getListeClients().get(i).contains(" ")) {
+			if(getExtracteur().getListeClients().get(i).contains(" ")) {
 				
 				return true;
 				
@@ -44,9 +52,9 @@ public class Facture {
 		}
 		
 		//verifier les plats
-		for(int i = 0; i < extracteur.getListePlats().size(); i++) {
+		for(int i = 0; i < getExtracteur().getListePlats().size(); i++) {
 			
-			splitString = extracteur.getListePlats().get(i).split(" ");
+			splitString = getExtracteur().getListePlats().get(i).split(" ");
 			if(splitString.length != 2) {
 				
 				return true;
@@ -67,23 +75,23 @@ public class Facture {
 		}
 		
 		//verifier les commandes
-		for(int i = 0; i < extracteur.getListeCommande().size(); i++) {
+		for(int i = 0; i < getExtracteur().getListeCommande().size(); i++) {
 			
-			splitString = extracteur.getListeCommande().get(i).split(" ");
+			splitString = getExtracteur().getListeCommande().get(i).split(" ");
 			if(splitString.length != 3) {
 
 				return true;
 				
 			}else {
 				
-				for(int j = 0; j < extracteur.getListeClients().size(); j++) {
+				for(int j = 0; j < getExtracteur().getListeClients().size(); j++) {
 					
-					if(extracteur.getListeClients().get(j).equalsIgnoreCase(splitString[0])) {
+					if(getExtracteur().getListeClients().get(j).equalsIgnoreCase(splitString[0])) {
 						
 						break;
 						
-					}else if(!extracteur.getListeClients().get(j).equalsIgnoreCase(splitString[0]) 
-							&& j == (extracteur.getListeClients().size() - 1)) {
+					}else if(!getExtracteur().getListeClients().get(j).equalsIgnoreCase(splitString[0]) 
+							&& j == (getExtracteur().getListeClients().size() - 1)) {
 
 						return true;
 						
@@ -91,15 +99,15 @@ public class Facture {
 					
 				}
 				
-				for(int j = 0; j < extracteur.getListePlats().size(); j++) {
+				for(int j = 0; j < getExtracteur().getListePlats().size(); j++) {
 					
-					String[] tableauPlats = extracteur.getListePlats().get(j).split(" ");
+					String[] tableauPlats = getExtracteur().getListePlats().get(j).split(" ");
 					if(tableauPlats[0].equalsIgnoreCase(splitString[1])) {
 						
 						break;
 						
 					}else if(!tableauPlats[0].equalsIgnoreCase(splitString[1]) 
-							&& j == (extracteur.getListePlats().size() - 1)) {
+							&& j == (getExtracteur().getListePlats().size() - 1)) {
 
 						return true;
 						
@@ -166,27 +174,27 @@ public class Facture {
 	public static void formaterTableau() {
 		
 		//mettre les clients dans un array
-		tableauClients = new String[extracteur.getListeClients().size()][2];
-		for(int i = 0; i < extracteur.getListeClients().size(); i++) {
+		tableauClients = new String[getExtracteur().getListeClients().size()][2];
+		for(int i = 0; i < getExtracteur().getListeClients().size(); i++) {
 			
-			tableauClients[i][0] = extracteur.getListeClients().get(i);
+			tableauClients[i][0] = getExtracteur().getListeClients().get(i);
 			tableauClients[i][1] = "0.00";
 			
 		}
 		
 		//mettre les plats dans une array
-		tableauPlats = new String[extracteur.getListePlats().size()][2];
-		for(int i = 0; i < extracteur.getListePlats().size(); i++) {
+		tableauPlats = new String[getExtracteur().getListePlats().size()][2];
+		for(int i = 0; i < getExtracteur().getListePlats().size(); i++) {
 			
-			tableauPlats[i] = extracteur.getListePlats().get(i).split(" ");
+			tableauPlats[i] = getExtracteur().getListePlats().get(i).split(" ");
 			
 		}
 		
 		//mettre les commandes dans une array
-		tableauCommandes = new String[extracteur.getListeCommande().size()][3]; 
-		for(int i = 0; i < extracteur.getListeCommande().size(); i++) {
+		tableauCommandes = new String[getExtracteur().getListeCommande().size()][3]; 
+		for(int i = 0; i < getExtracteur().getListeCommande().size(); i++) {
 			
-			tableauCommandes[i] = extracteur.getListeCommande().get(i).split(" ");
+			tableauCommandes[i] = getExtracteur().getListeCommande().get(i).split(" ");
 
 		}
 		
@@ -195,13 +203,17 @@ public class Facture {
 	public static void ecrireFacture() {
 		
 		try {
-			
-			PrintWriter writer = new PrintWriter("src/main/fichierSortie.txt", "UTF-8");
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			Date date = new Date();
+			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + dateFormat.format(date) +".txt", "UTF-8");
 			writer.println("Bienvenue chez Barette!");
+			System.out.println("Bienvenue chez Barette!");
 			writer.println("Factures:");
+			System.out.println("Factures:");
 			for(int i = 0; i < tableauClients.length; i++) {
 				
 				writer.println(tableauClients[i][0] + " " + tableauClients[i][1] + "$");
+				System.out.println(tableauClients[i][0] + " " + tableauClients[i][1] + "$");
 				
 			}
 			
@@ -218,6 +230,16 @@ public class Facture {
 			
 		}
 		
+	}
+
+
+	public static Extracteur getExtracteur() {
+		return extracteur;
+	}
+
+
+	public static void setExtracteur(Extracteur extracteur) {
+		Facture.extracteur = extracteur;
 	}
 
 }

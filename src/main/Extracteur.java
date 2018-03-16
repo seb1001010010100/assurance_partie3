@@ -8,22 +8,10 @@ import java.util.ArrayList;
 
 public class Extracteur {
 	
-	private String nomFichier;
 	private ArrayList<String> listeClients = new ArrayList<String>();
 	private ArrayList<String> listePlats = new ArrayList<String>();
 	private ArrayList<String> listeCommande = new ArrayList<String>();
 	
-	public Extracteur(){
-		
-		this.nomFichier = "fichierEntree.txt";
-		
-	}
-	
-	public Extracteur(String nomFichier) {
-		
-		this.nomFichier = nomFichier;
-		
-	}
 	
 	public void setListeClients(ArrayList<String> listeClients) {
 		
@@ -62,11 +50,11 @@ public class Extracteur {
 	}
 
 	
-	public void extraireDonnees() {
+	public void extraireDonnees(String nomFichier) {
 		
         try {
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/" + nomFichier)); 
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/commandes/" + nomFichier)); 
             String ligne;
             //String qui change celon le type de donnee lue (clients/plats/commande)
             String estUn = null;
