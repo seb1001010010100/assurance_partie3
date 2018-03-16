@@ -64,7 +64,13 @@ public class Facture {
 				
 				   try
 				   {
-				      Double.parseDouble(splitString[1]);
+					  double prix = Double.parseDouble(splitString[1]);
+				      if(prix < 0) {
+				    	  
+						listeErreur.add("Le prix : " + splitString[1] + ", n'est pas du bon format.");
+						iter.remove();
+				    	  
+				      }
 				   }
 				   catch( Exception e)
 				   {
@@ -124,11 +130,17 @@ public class Facture {
 				
 			   try
 			   {
-			      Integer.parseInt(splitString[2]);
+			      int prix = Integer.parseInt(splitString[2]);
+			      if(prix < 0) {
+			    	  
+					listeErreur.add("Le nombre : " + splitString[2] + ", n'est pas du bon format.");
+					iter.remove();
+			    	  
+			      }
 			   }
 			   catch(Exception e)
 			   {
-					listeErreur.add("Le prix : " + splitString[2] + ", n'est pas du bon format.");
+					listeErreur.add("Le nombre : " + splitString[2] + ", n'est pas du bon format.");
 					iter.remove();
 			   }
 				
@@ -215,7 +227,8 @@ public class Facture {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			Date date = new Date();
 			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + dateFormat.format(date) +".txt", "UTF-8");
-			writer.println("Bienvenue chez Barette!\n" + separateur);
+			writer.println("Bienvenue chez Barette!");
+			writer.println(separateur);
 			System.out.println("Bienvenue chez Barette!\n" + separateur);
 			
 			if(!listeErreur.isEmpty()) {

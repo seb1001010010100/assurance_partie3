@@ -1,6 +1,4 @@
 Clients :
-patrick
-patrick papineau
 Roger
 Céline
 Steeve
@@ -9,7 +7,9 @@ Poutine 10
 Frites 2.5
 Repas_Poulet 15.75
 Commandes :
-Roger Poutine 1
-Céline Frites 2
 Céline Repas_Poulet 2
+Roger
+Roger Repas_Poulet
+Roger Poutine au poulet 2
+ Roger Poutine 2
 Fin

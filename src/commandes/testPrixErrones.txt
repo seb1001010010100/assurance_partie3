@@ -1,0 +1,12 @@
+Clients :
+Roger
+Céline
+Steeve
+Plats :
+Poutine 10
+Frite -1
+Jambon deux
+Coke 5$
+Commandes :
+Roger Poutine 1
+Fin

@@ -1,14 +1,15 @@
 Clients :
-Patrick Papineau
 Roger
 Céline
 Steeve
 Plats :
-Poutine 10.5
+Poutine 10
 Frites 2.5
 Repas_Poulet 15.75
+Jambon 5
 Commandes :
 Roger Poutine 1
-Céline Frites 2
-Céline Repas_nouille 2
+Céline Frites -10
+Céline Repas_Poulet deux
+Steeve Jambon #30
 Fin
