@@ -4,9 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
 
 public class Facture {
 	
@@ -14,50 +17,48 @@ public class Facture {
 	private static String[][] tableauClients;
 	private static String[][] tableauPlats;
 	private static String [][] tableauCommandes;
-	private static ArrayList<String> tableauErreur = new ArrayList<String>();
-	private static final int TPS = 5, TVQ = 10;
+	private static ArrayList<String> listeErreur = new ArrayList<String>();
+	private static final double TPS = 0.05, TVQ = 0.10;
 	
 
 	public static void main(String[] args) {
 		
 		getExtracteur().extraireDonnees("fichierEntree.txt");
-		if(verifierDonnees()) {
-			
-			System.out.println("Le fichier ne respecte pas le format demandé !");
-			
-		}else {
-			
-			creerFacture();
+		verifierDonnees();
+		creerFacture();
 
-		}
 		
 	}
 	
-	
-	//retourne faux si il n'y a pas d'erreur
-	public static boolean verifierDonnees() {
+	//remplis la liste des erreurs courants
+	public static void verifierDonnees() {
 		
 		//tableau de string pour splitter les commande et plats
 		String[] splitString;
 		
 		//verifier les clients
-		for(int i = 0; i < getExtracteur().getListeClients().size(); i++) {
+		for(Iterator<String> iter = getExtracteur().getListeClients().listIterator(); iter.hasNext();) {
 			
-			if(getExtracteur().getListeClients().get(i).contains(" ")) {
+			String currentClient = iter.next();
+			
+			if(currentClient.contains(" ")) {
 				
-				return true;
+				listeErreur.add("Le client : " + currentClient + ", n'est pas du bon format.");
+				iter.remove();
 				
 			}
 			
 		}
 		
 		//verifier les plats
-		for(int i = 0; i < getExtracteur().getListePlats().size(); i++) {
+		for(Iterator<String> iter = getExtracteur().getListePlats().listIterator(); iter.hasNext();) {
 			
-			splitString = getExtracteur().getListePlats().get(i).split(" ");
+			String currentPlat = iter.next();
+			splitString = currentPlat.split(" ");
 			if(splitString.length != 2) {
 				
-				return true;
+				listeErreur.add("Le plat : " + currentPlat + ", n'est pas du bon format.");
+				iter.remove();
 				
 			}else{
 				
@@ -67,7 +68,8 @@ public class Facture {
 				   }
 				   catch( Exception e)
 				   {
-				      return true;
+						listeErreur.add("Le prix : " + splitString[1] + ", n'est pas du bon format.");
+						iter.remove();
 				   }
 				
 			}
@@ -75,41 +77,46 @@ public class Facture {
 		}
 		
 		//verifier les commandes
-		for(int i = 0; i < getExtracteur().getListeCommande().size(); i++) {
+		for(Iterator<String> iter = getExtracteur().getListeCommande().listIterator(); iter.hasNext();) {
 			
-			splitString = getExtracteur().getListeCommande().get(i).split(" ");
+			String currentCommande = iter.next();
+			splitString = currentCommande.split(" ");
 			if(splitString.length != 3) {
 
-				return true;
+				listeErreur.add("La commande : " + currentCommande + ", n'est pas du bon format.");
+				iter.remove();
 				
 			}else {
 				
-				for(int j = 0; j < getExtracteur().getListeClients().size(); j++) {
+				for(Iterator<String> iterCli = getExtracteur().getListeClients().listIterator(); iterCli.hasNext();) {
 					
-					if(getExtracteur().getListeClients().get(j).equalsIgnoreCase(splitString[0])) {
+					String client = iterCli.next();
+					if(client.equalsIgnoreCase(splitString[0])) {
 						
 						break;
 						
-					}else if(!getExtracteur().getListeClients().get(j).equalsIgnoreCase(splitString[0]) 
-							&& j == (getExtracteur().getListeClients().size() - 1)) {
+					}else if(!client.equalsIgnoreCase(splitString[0]) 
+							&& !iterCli.hasNext()) {
 
-						return true;
+						listeErreur.add("Le client : " + splitString[0] + ", n'existe pas dans la liste des clients.");
+						iter.remove();
 						
 					}
 					
 				}
 				
-				for(int j = 0; j < getExtracteur().getListePlats().size(); j++) {
+				for(Iterator<String> iterPlat = getExtracteur().getListePlats().listIterator(); iterPlat.hasNext();) {
 					
-					String[] tableauPlats = getExtracteur().getListePlats().get(j).split(" ");
+					String[] tableauPlats = iterPlat.next().split(" ");
 					if(tableauPlats[0].equalsIgnoreCase(splitString[1])) {
 						
 						break;
 						
 					}else if(!tableauPlats[0].equalsIgnoreCase(splitString[1]) 
-							&& j == (getExtracteur().getListePlats().size() - 1)) {
+							&& !iterPlat.hasNext()) {
 
-						return true;
+						listeErreur.add("Le plat : " + splitString[1] + ", n'existe pas dans la liste des plats.");
+						iter.remove();
 						
 					}
 					
@@ -121,16 +128,15 @@ public class Facture {
 			   }
 			   catch(Exception e)
 			   {
-			      return true;
+					listeErreur.add("Le prix : " + splitString[2] + ", n'est pas du bon format.");
+					iter.remove();
 			   }
 				
 				
 			}
 			
 		}
-		
-		
-		return false;
+
 		
 	}
 	
@@ -139,7 +145,7 @@ public class Facture {
 		formaterTableau();
 		for(int i = 0; i < tableauCommandes.length; i++) {
 			
-			double prixPlat = 0, prixTotal = 0, prixClient = 0;
+			double prixPlat = 0, prixTotal = 0, prixClient = 0, prixCommande;
 			int nombrePlat = 0;
 			
 			for(int j = 0; j < tableauClients.length; j++) {
@@ -157,7 +163,8 @@ public class Facture {
 						}
 						
 					}
-					prixTotal = prixPlat * nombrePlat;
+					prixCommande = prixPlat * nombrePlat;
+					prixTotal = prixCommande + (prixCommande * (TPS + TVQ));
 					prixClient = Double.parseDouble(tableauClients[j][1]);
 					tableauClients[j][1] = Double.toString(prixClient + prixTotal);
 					break;
@@ -203,17 +210,43 @@ public class Facture {
 	public static void ecrireFacture() {
 		
 		try {
+			NumberFormat argentFormat = NumberFormat.getCurrencyInstance(Locale.CANADA);
+			String separateur = "--------------------------";
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			Date date = new Date();
 			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + dateFormat.format(date) +".txt", "UTF-8");
-			writer.println("Bienvenue chez Barette!");
-			System.out.println("Bienvenue chez Barette!");
+			writer.println("Bienvenue chez Barette!\n" + separateur);
+			System.out.println("Bienvenue chez Barette!\n" + separateur);
+			
+			if(!listeErreur.isEmpty()) {
+				
+				System.out.println("Erreurs:");
+				writer.println("Erreurs:");
+				
+				for(Iterator<String> iter = listeErreur.iterator(); iter.hasNext(); ) {
+					String erreur = iter.next();
+					System.out.println(erreur);
+					writer.println(erreur);
+				}
+				
+				System.out.println(separateur);
+				writer.println(separateur);
+				
+			}
+			
 			writer.println("Factures:");
 			System.out.println("Factures:");
 			for(int i = 0; i < tableauClients.length; i++) {
 				
-				writer.println(tableauClients[i][0] + " " + tableauClients[i][1] + "$");
-				System.out.println(tableauClients[i][0] + " " + tableauClients[i][1] + "$");
+				double total = Double.parseDouble(tableauClients[i][1]);
+						
+				if(total > 0) {
+					
+					writer.println(tableauClients[i][0] + " " + argentFormat.format(total));
+					System.out.println(tableauClients[i][0] + " " + argentFormat.format(total));
+					
+				}
+
 				
 			}
 			
@@ -240,6 +273,14 @@ public class Facture {
 
 	public static void setExtracteur(Extracteur extracteur) {
 		Facture.extracteur = extracteur;
+	}
+
+	public static ArrayList<String> getListeErreur() {
+		return listeErreur;
+	}
+
+	public static void setListeErreur(ArrayList<String> listeErreur) {
+		Facture.listeErreur = listeErreur;
 	}
 
 }

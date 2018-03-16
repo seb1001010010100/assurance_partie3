@@ -3,11 +3,11 @@ Roger
 Céline
 Steeve
 Plats :
-Poutine 10
+Poutine 10.5 degeulasse
 Frites 2.5
 Repas_Poulet 15.75
 Commandes :
 Roger Poutine 1
 Céline Frites 2
-Céline Repas_Poulet 2
+Céline Repas_nouille 2
 Fin

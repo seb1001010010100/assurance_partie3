@@ -1,0 +1,7 @@
+Bienvenue chez Barette!
+Factures:
+Erreurs:
+Le plat : Poutine, n'existe pas dans la liste des plats.
+Roger 0.00$
+Céline 36.5$
+Steeve 0.00$

@@ -1,0 +1,9 @@
+Bienvenue chez Barette!
+--------------------------
+Erreurs:
+Le plat : Frites, n'existe pas dans la liste des plats.
+--------------------------
+Factures:
+Roger 10.0$
+Céline 31.5$
+Steeve 0.00$

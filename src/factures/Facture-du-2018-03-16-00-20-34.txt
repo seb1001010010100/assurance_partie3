@@ -1,0 +1,10 @@
+Bienvenue chez Barette!
+--------------------------
+Erreurs:
+Le plat : , n'est pas du bon format.
+Le plat : Repas_Poulet, n'existe pas dans la liste des plats.
+--------------------------
+Factures:
+Roger 10.0$
+Céline 5.0$
+Steeve 0.00$
