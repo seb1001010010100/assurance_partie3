@@ -10,7 +10,7 @@ public class Extracteur {
 	
 	private ArrayList<String> listeClients = new ArrayList<String>();
 	private ArrayList<String> listePlats = new ArrayList<String>();
-	private ArrayList<String> listeCommande = new ArrayList<String>();
+	private ArrayList<String> listeCommandes = new ArrayList<String>();
 	
 	
 	public void setListeClients(ArrayList<String> listeClients) {
@@ -37,15 +37,15 @@ public class Extracteur {
 		
 	}
 	
-	public void setListeCommande(ArrayList<String> listeCommande) {
+	public void setListeCommandes(ArrayList<String> listeCommande) {
 		
-		this.listeCommande = listeCommande;
+		this.listeCommandes = listeCommande;
 		
 	}
 	
-	public ArrayList<String> getListeCommande(){
+	public ArrayList<String> getListeCommandes(){
 		
-		return this.listeCommande;
+		return this.listeCommandes;
 		
 	}
 
@@ -89,7 +89,7 @@ public class Extracteur {
                 		
                 	}else if(estUn.equalsIgnoreCase("commande")) {
                 		
-                		listeCommande.add(ligne);
+                		listeCommandes.add(ligne);
                 		
                 	}
                 	

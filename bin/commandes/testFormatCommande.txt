@@ -1,0 +1,15 @@
+Clients :
+Roger
+Céline
+Steeve
+Plats :
+Poutine 10
+Frites 2.5
+Repas_Poulet 15.75
+Commandes :
+Céline Repas_Poulet 2
+Roger
+Roger Repas_Poulet
+Roger Poutine au poulet 2
+ Roger Poutine 2
+Fin

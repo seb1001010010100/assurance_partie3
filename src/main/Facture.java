@@ -83,7 +83,7 @@ public class Facture {
 		}
 		
 		//verifier les commandes
-		for(Iterator<String> iter = getExtracteur().getListeCommande().listIterator(); iter.hasNext();) {
+		for(Iterator<String> iter = getExtracteur().getListeCommandes().listIterator(); iter.hasNext();) {
 			
 			String currentCommande = iter.next();
 			splitString = currentCommande.split(" ");
@@ -210,10 +210,10 @@ public class Facture {
 		}
 		
 		//mettre les commandes dans une array
-		tableauCommandes = new String[getExtracteur().getListeCommande().size()][3]; 
-		for(int i = 0; i < getExtracteur().getListeCommande().size(); i++) {
+		tableauCommandes = new String[getExtracteur().getListeCommandes().size()][3]; 
+		for(int i = 0; i < getExtracteur().getListeCommandes().size(); i++) {
 			
-			tableauCommandes[i] = getExtracteur().getListeCommande().get(i).split(" ");
+			tableauCommandes[i] = getExtracteur().getListeCommandes().get(i).split(" ");
 
 		}
 		
@@ -294,6 +294,30 @@ public class Facture {
 
 	public static void setListeErreur(ArrayList<String> listeErreur) {
 		Facture.listeErreur = listeErreur;
+	}
+
+	public static String[][] getTableauClients() {
+		return tableauClients;
+	}
+
+	public static void setTableauClients(String[][] tableauClients) {
+		Facture.tableauClients = tableauClients;
+	}
+
+	public static String[][] getTableauPlats() {
+		return tableauPlats;
+	}
+
+	public static void setTableauPlats(String[][] tableauPlats) {
+		Facture.tableauPlats = tableauPlats;
+	}
+
+	public static String [][] getTableauCommandes() {
+		return tableauCommandes;
+	}
+
+	public static void setTableauCommandes(String [][] tableauCommandes) {
+		Facture.tableauCommandes = tableauCommandes;
 	}
 
 }
