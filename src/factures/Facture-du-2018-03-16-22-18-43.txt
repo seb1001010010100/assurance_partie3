@@ -1,8 +1,0 @@
-Bienvenue chez Barette!
---------------------------
-Erreurs:
-Le client : patrick papineau, n'est pas du bon format.
---------------------------
-Factures:
-Roger $11.50
-Céline $41.98

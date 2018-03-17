@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -230,9 +231,13 @@ public class Facture {
 		try {
 			NumberFormat argentFormat = NumberFormat.getCurrencyInstance(Locale.CANADA);
 			String separateur = "--------------------------";
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			Date date = new Date();
-			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + dateFormat.format(date) +".txt", "UTF-8");
+
+			Calendar now = Calendar.getInstance();
+			String date = now.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.CANADA) + "-" 
+					+ now.get(Calendar.DAY_OF_MONTH) + "-" + now.get(Calendar.YEAR) + "-"
+					+ now.get(Calendar.HOUR_OF_DAY) + "h" + now.get(Calendar.MINUTE) + "s"
+					+ now.get(Calendar.SECOND);
+			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + date +".txt", "UTF-8");
 			writer.println("Bienvenue chez Barette!");
 			writer.println(separateur);
 			System.out.println("Bienvenue chez Barette!\n" + separateur);
