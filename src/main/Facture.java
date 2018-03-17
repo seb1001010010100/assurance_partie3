@@ -155,36 +155,7 @@ public class Facture {
 	public static void creerFacture() {
 		
 		formaterTableau();
-		for(int i = 0; i < tableauCommandes.length; i++) {
-			
-			double prixPlat = 0, prixTotal = 0, prixClient = 0, prixCommande;
-			int nombrePlat = 0;
-			
-			for(int j = 0; j < tableauClients.length; j++) {
-				
-				if(tableauCommandes[i][0].equalsIgnoreCase(tableauClients[j][0])) {
-					
-					nombrePlat = Integer.parseInt(tableauCommandes[i][2]);
-					
-					for(int f = 0; f < tableauPlats.length; f++) {
-						
-						if(tableauCommandes[i][1].equalsIgnoreCase(tableauPlats[f][0])) {
-							
-							prixPlat = Double.parseDouble(tableauPlats[f][1]);
-							break;
-						}
-						
-					}
-					prixCommande = prixPlat * nombrePlat;
-					prixTotal = prixCommande + (prixCommande * (TPS + TVQ));
-					prixClient = Double.parseDouble(tableauClients[j][1]);
-					tableauClients[j][1] = Double.toString(prixClient + prixTotal);
-					break;
-				}
-				
-			}
-			
-		}
+		calculerPrix();
 		ecrireFacture();
 		
 		
@@ -215,6 +186,41 @@ public class Facture {
 			
 			tableauCommandes[i] = getExtracteur().getListeCommandes().get(i).split(" ");
 
+		}
+		
+	}
+	
+	public static void calculerPrix() {
+		
+		for(int i = 0; i < tableauCommandes.length; i++) {
+			
+			double prixPlat = 0, prixTotal = 0, prixClient = 0, prixCommande;
+			int nombrePlat = 0;
+			
+			for(int j = 0; j < tableauClients.length; j++) {
+				
+				if(tableauCommandes[i][0].equalsIgnoreCase(tableauClients[j][0])) {
+					
+					nombrePlat = Integer.parseInt(tableauCommandes[i][2]);
+					
+					for(int f = 0; f < tableauPlats.length; f++) {
+						
+						if(tableauCommandes[i][1].equalsIgnoreCase(tableauPlats[f][0])) {
+							
+							prixPlat = Double.parseDouble(tableauPlats[f][1]);
+							break;
+						}
+						
+					}
+					prixCommande = prixPlat * nombrePlat;
+					prixTotal = prixCommande + (prixCommande * (TPS + TVQ));
+					prixClient = Double.parseDouble(tableauClients[j][1]);
+					tableauClients[j][1] = Double.toString(prixClient + prixTotal);
+					break;
+				}
+				
+			}
+			
 		}
 		
 	}
