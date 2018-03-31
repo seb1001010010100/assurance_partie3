@@ -16,7 +16,7 @@ public class Facture {
 	private static String[][] tableauPlats;
 	private static String [][] tableauCommandes;
 	private static ArrayList<String> listeErreur = new ArrayList<String>();
-	private static final double TPS = 0.05, TVQ = 0.10;
+	private static final double TPS = 0.05, TVQ = 0.10, FRAIS = 0.15;
 	
 
 	public static void main(String[] args) {
@@ -211,6 +211,13 @@ public class Facture {
 						
 					}
 					prixCommande = prixPlat * nombrePlat;
+					
+					//ajout du frais de service si 100$ ou + de 3 personnes
+					if(prixCommande > 100 || tableauClients.length >= 3) {
+						
+						prixCommande += (prixCommande * FRAIS);
+						
+					}
 					prixTotal = prixCommande + (prixCommande * (TPS + TVQ));
 					prixClient = Double.parseDouble(tableauClients[j][1]);
 					tableauClients[j][1] = Double.toString(prixClient + prixTotal);
