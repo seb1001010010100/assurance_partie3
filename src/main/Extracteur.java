@@ -11,6 +11,7 @@ public class Extracteur {
 	private ArrayList<String> listeClients = new ArrayList<String>();
 	private ArrayList<String> listePlats = new ArrayList<String>();
 	private ArrayList<String> listeCommandes = new ArrayList<String>();
+	private int numTab;
 	
 	
 	public void setListeClients(ArrayList<String> listeClients) {
@@ -48,6 +49,18 @@ public class Extracteur {
 		return this.listeCommandes;
 		
 	}
+	
+	public void setTable(int numTab){
+		
+		this.numTab = numTab;
+		
+	}
+	
+	public int getTable() {
+		
+		return this.numTab;
+		
+	}
 
 	
 	public void extraireDonnees(String nomFichier) {
@@ -60,8 +73,12 @@ public class Extracteur {
             String estUn = null;
 
             while((ligne = bufferedReader.readLine()) != null) {
-            	            	
-                if(ligne.equalsIgnoreCase("Clients :")) {
+            	
+            	if(ligne.equalsIgnoreCase("Table :")) {
+            		
+            		estUn = "table";
+            		
+            	}else if(ligne.equalsIgnoreCase("Clients :")) {
                 	
                 	estUn = "client";
                 	
@@ -79,7 +96,11 @@ public class Extracteur {
                 	
                 }else{
                 	
-                	if(estUn.equalsIgnoreCase("client")) {
+                	if(estUn.equalsIgnoreCase("table")) {
+                		
+                		numTab = Integer.parseInt(ligne);
+                		
+                	}else if(estUn.equalsIgnoreCase("client")) {
                 		
                 		listeClients.add(ligne);
                 		

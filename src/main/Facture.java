@@ -234,7 +234,8 @@ public class Facture {
 					+ now.get(Calendar.DAY_OF_MONTH) + "-" + now.get(Calendar.YEAR) + "-"
 					+ now.get(Calendar.HOUR_OF_DAY) + "h" + now.get(Calendar.MINUTE) + "s"
 					+ now.get(Calendar.SECOND);
-			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + date +".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("src/factures/Facture-table-" + extracteur.getTable() 
+				+"-du-" + date +".txt", "UTF-8");
 			writer.println("Bienvenue chez Barette!");
 			writer.println(separateur);
 			System.out.println("Bienvenue chez Barette!\n" + separateur);
@@ -255,8 +256,8 @@ public class Facture {
 				
 			}
 			
-			writer.println("Factures:");
-			System.out.println("Factures:");
+			writer.println("Factures de la Table #" + extracteur.getTable() + ":");
+			System.out.println("Factures de la Table #" + extracteur.getTable() + ":");
 			for(int i = 0; i < tableauClients.length; i++) {
 				
 				double total = Double.parseDouble(tableauClients[i][1]);
