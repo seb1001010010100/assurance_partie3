@@ -12,6 +12,7 @@ public class Extracteur {
 	private ArrayList<String> listePlats = new ArrayList<String>();
 	private ArrayList<String> listeCommandes = new ArrayList<String>();
 	private int numTab;
+	private String commandeComplete = "-Commande-\n";
 	
 	
 	public void setListeClients(ArrayList<String> listeClients) {
@@ -61,19 +62,35 @@ public class Extracteur {
 		return this.numTab;
 		
 	}
+	
+	public String getCommandeComplete() {
+		
+		return commandeComplete;
+		
+	}
+	
+	public void setCommandeComplete(String commandeComplete) {
+		
+		this.commandeComplete = commandeComplete;
+		
+	}
 
 	
 	public void extraireDonnees(String nomFichier) {
 		
         try {
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/commandes/" + nomFichier)); 
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(nomFichier)); 
             String ligne;
             //String qui change celon le type de donnee lue (clients/plats/commande)
             String estUn = null;
 
             while((ligne = bufferedReader.readLine()) != null) {
             	
+            	//ajout de tout les ligne dans la commande complete
+            	commandeComplete += ligne + "\n";
+            	
+            	//Creation des listes specifiques
             	if(ligne.equalsIgnoreCase("Table :")) {
             		
             		estUn = "table";
