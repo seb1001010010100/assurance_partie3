@@ -1,5 +1,9 @@
 package main;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -9,21 +13,56 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
 
-public class Facture {
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+public class Facture extends JFrame implements ActionListener{
 	
+	private static final long serialVersionUID = 1L;
 	private static Extracteur extracteur = new Extracteur();
 	private static String[][] tableauClients;
 	private static String[][] tableauPlats;
 	private static String [][] tableauCommandes;
 	private static ArrayList<String> listeErreur = new ArrayList<String>();
-	private static final double TPS = 0.05, TVQ = 0.10;
+	private static final double TPS = 0.05, TVQ = 0.10, FRAIS = 0.15;
+	private JPanel paneauMain = new JPanel(), paneauTxt = new JPanel(), paneauButton = new JPanel();
+	private JButton btnLire = new JButton("Lire Fichier"), btnProduire = new JButton("Produire Facture");
+	private JTextArea txtCommande = new JTextArea("-Commande-"), txtFacture = new JTextArea("-Facture-");
+	JScrollPane scrollCommande = new JScrollPane (txtCommande), 
+			scroolFacture = new JScrollPane (txtFacture);
+	private FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("text Files", "txt");
+	private JFileChooser fc = new JFileChooser("src/commandes/");
+	private static String factureComplete = "-Facture-\n";
 	
+	public Facture() {
+		
+		super("Barette - Création de facture");
+		new GridLayout(1,2);
+		setSize(830,450);
+		txtFacture.setPreferredSize(new Dimension(400, 350));
+		txtCommande.setPreferredSize(new Dimension(400, 350));
+		txtFacture.setEditable(false);
+		txtCommande.setEditable(false);
+		btnLire.addActionListener(this);
+		btnProduire.addActionListener(this);
+		btnProduire.setEnabled(false);
+		paneauTxt.add(scrollCommande);
+		paneauButton.add(btnLire);
+		paneauButton.add(btnProduire);
+		paneauTxt.add(scroolFacture);
+		paneauMain.add(paneauTxt);
+		paneauMain.add(paneauButton);
+		this.add(paneauMain);
+		fc.setFileFilter(txtFilter);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+	}
 
 	public static void main(String[] args) {
 		
-		getExtracteur().extraireDonnees("fichierEntree.txt");
-		verifierDonnees();
-		creerFacture();
+		Facture facture = new Facture();
+		facture.setVisible(true);
 
 		
 	}
@@ -211,6 +250,13 @@ public class Facture {
 						
 					}
 					prixCommande = prixPlat * nombrePlat;
+					
+					//ajout du frais de service si 100$ ou + de 3 personnes
+					if(prixCommande > 100 || tableauClients.length >= 3) {
+						
+						prixCommande += (prixCommande * FRAIS);
+						
+					}
 					prixTotal = prixCommande + (prixCommande * (TPS + TVQ));
 					prixClient = Double.parseDouble(tableauClients[j][1]);
 					tableauClients[j][1] = Double.toString(prixClient + prixTotal);
@@ -234,29 +280,30 @@ public class Facture {
 					+ now.get(Calendar.DAY_OF_MONTH) + "-" + now.get(Calendar.YEAR) + "-"
 					+ now.get(Calendar.HOUR_OF_DAY) + "h" + now.get(Calendar.MINUTE) + "s"
 					+ now.get(Calendar.SECOND);
-			PrintWriter writer = new PrintWriter("src/factures/Facture-du-" + date +".txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("src/factures/Facture-table-" + extracteur.getTable() 
+				+"-du-" + date +".txt", "UTF-8");
 			writer.println("Bienvenue chez Barette!");
 			writer.println(separateur);
-			System.out.println("Bienvenue chez Barette!\n" + separateur);
+			factureComplete += "Bienvenue chez Barette!\n" + separateur + "\n";
 			
 			if(!listeErreur.isEmpty()) {
 				
-				System.out.println("Erreurs:");
+				factureComplete += "Erreurs:\n";
 				writer.println("Erreurs:");
 				
 				for(Iterator<String> iter = listeErreur.iterator(); iter.hasNext(); ) {
 					String erreur = iter.next();
-					System.out.println(erreur);
+					factureComplete += erreur + "\n";
 					writer.println(erreur);
 				}
 				
-				System.out.println(separateur);
+				factureComplete += separateur + "\n";
 				writer.println(separateur);
 				
 			}
 			
-			writer.println("Factures:");
-			System.out.println("Factures:");
+			writer.println("Factures de la Table #" + extracteur.getTable() + ":");
+			factureComplete += "Factures de la Table #" + extracteur.getTable() + ":\n";
 			for(int i = 0; i < tableauClients.length; i++) {
 				
 				double total = Double.parseDouble(tableauClients[i][1]);
@@ -264,13 +311,13 @@ public class Facture {
 				if(total > 0) {
 					
 					writer.println(tableauClients[i][0] + " " + argentFormat.format(total));
-					System.out.println(tableauClients[i][0] + " " + argentFormat.format(total));
+					factureComplete += tableauClients[i][0] + " " + argentFormat.format(total) + "\n";
 					
 				}
 
 				
 			}
-			
+			System.out.println(factureComplete);
 			writer.close();
 			
 			
@@ -326,6 +373,35 @@ public class Facture {
 
 	public static void setTableauCommandes(String [][] tableauCommandes) {
 		Facture.tableauCommandes = tableauCommandes;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if(e.getSource() == btnLire) {
+			
+			if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				
+				txtFacture.setText("");
+				extracteur = new Extracteur();
+				extracteur.extraireDonnees(fc.getSelectedFile().getAbsolutePath());
+				txtCommande.setText(extracteur.getCommandeComplete());
+				btnProduire.setEnabled(true);
+				
+			}
+
+			
+		}else if(e.getSource() == btnProduire) {
+			
+			listeErreur.clear();
+			factureComplete = "-Facture-\n";
+			verifierDonnees();
+			creerFacture();
+			txtFacture.setText(factureComplete);
+			btnProduire.setEnabled(false);
+			
+		}
+		
 	}
 
 }
